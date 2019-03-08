@@ -45,7 +45,7 @@
                                         <div class="orderListItemProductLinkInnerDiv">
                                                     <img title="支持信用卡支付" src="http://how2j.cn/tmall/img/site/creditcard.png">
                                                     <img title="消费者保障服务,承诺7天退货" src="http://how2j.cn/tmall/img/site/7day.png">
-                                                    <img title="消费者保障服务,承诺如实描述" src="http://how2j.cn/tmall/img/site/promise.png">                    
+                                                    <img title="消费者保障服务,承诺如实描述" src="http://how2j.cn/tmall/img/site/promise.png">
                                         </div>
                                     </div>
                                 </td>
@@ -63,7 +63,7 @@
                                     <a>
                                         <button class="orderListItemConfirm" @click="operation(item)">{{item.operation}}</button>
                                     </a>
-                                </td>                    
+                                </td>
                             </tr>
                     </tbody></table>
             </div>
@@ -73,7 +73,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       orderList: [
         {

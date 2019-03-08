@@ -19,20 +19,20 @@
 
 <script>
 export default {
-    data () {
-      return {
-        sumPirce: ''
-      }
-    },
-    methods: {
-      confirmPay () {
-        this.$router.push('/paySuccess')
-      }
-    },
-    created () {
-      this.sumPirce = this.$route.query.sumPirce
-      console.log(this.$route.query.oid)
+  data () {
+    return {
+      sumPirce: ''
     }
+  },
+  methods: {
+    confirmPay () {
+      this.$router.push('/paySuccess')
+    }
+  },
+  created () {
+    this.sumPirce = this.$route.query.sumPirce
+    console.log(this.$route.query.oid)
+  }
 }
 </script>
 
@@ -67,4 +67,3 @@ export default {
         width: 107px;
     }
 </style>
-

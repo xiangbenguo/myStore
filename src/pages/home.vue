@@ -34,7 +34,7 @@ export default {
   name: 'home',
   components: {
     'search-bar': searchBar,
-    'carouselContent' : carouselContent,
+    'carouselContent': carouselContent,
     'products': products
   },
   data () {
@@ -43,7 +43,7 @@ export default {
         require('../assets/img/carousel1.jpg'),
         require('../assets/img/carousel2.jpg'),
         require('../assets/img/carousel3.jpg'),
-        require('../assets/img/carousel4.jpg'),
+        require('../assets/img/carousel4.jpg')
       ]
     }
   }
@@ -56,7 +56,7 @@ export default {
     margin-top: 33px;
     width: 100%  !important
   }
-  
+
   .categoryWithCarousel {
     width: 100%;
     position: relative
@@ -74,7 +74,7 @@ export default {
     line-height: 36px;
     font-size: 16px;
     margin-left: 17vw;
-    
+
   }
   .rightMenu {
     height: 36px;

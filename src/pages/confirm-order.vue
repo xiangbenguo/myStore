@@ -114,12 +114,12 @@ export default {
   },
   methods: {
     submitOrder () {
-      this.$router.push({path: '/pay', query:{oid:'123', sumPirce: this.priceSum}})
+      this.$router.push({path: '/pay', query: {oid: '123', sumPirce: this.priceSum}})
     }
   },
   computed: {
     priceSum () {
-      return this.productPrice*this.productNumber
+      return this.productPrice * this.productNumber
     }
   },
   created () {

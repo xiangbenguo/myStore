@@ -11,7 +11,7 @@
                     <tr>
                         <td class="registerTip registerTableLeftTD">设置登陆密码</td>
                         <td class="registerTableRightTD">登陆时验证，保护账号信息</td>
-                    </tr>    
+                    </tr>
                     <tr>
                         <td class="registerTableLeftTD">登陆密码</td>
                         <td class="registerTableRightTD"><input type="password" placeholder="设置你的登陆密码" name="password" v-model="passWord"> </td>
@@ -55,19 +55,40 @@ export default {
   methods: {
     submit () {
       if (this.userName === '' || this.passWord === '' || this.confirmPassWord === '') {
-        alert('请输入相关信息')
+        this.$alert('请输入相关信息', '提示', {
+          confirmButtonText: '确认',
+          type: 'warning'
+        })
         return
       }
       if (this.passWord !== this.confirmPassWord) {
-        alert('两次密码不一致')
+        this.$alert('两次密码不一致', '提示', {
+          confirmButtonText: '确认',
+          type: 'warning'
+        })
         return
       }
-      this.isShow = false
+      const data = {
+        'username': this.userName,
+        'password': this.passWord
+      }
+      this.$axios.post('http://localhost:8080/user/add', data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.isShow = false
+        } else {
+          this.$alert(res.data.msg, '提示', {
+            confirmButtonText: '确认',
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }
 </script>
-
 
 <style scoped>
     .registerHeader {

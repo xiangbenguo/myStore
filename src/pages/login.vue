@@ -15,13 +15,13 @@
                     <span class="loginInputIcon ">
                         <span class=" glyphicon glyphicon-user"></span>
                     </span>
-                    <input type="text" placeholder="手机/会员名/邮箱" name="name" v-model="userName">        
+                    <input type="text" placeholder="手机/会员名/邮箱" name="name" v-model="userName">
                 </div>
                 <div class="loginInput ">
                     <span class="loginInputIcon ">
                         <span class=" glyphicon glyphicon-lock"></span>
                     </span>
-                    <input type="password" placeholder="密码" name="password" v-model="password">           
+                    <input type="password" placeholder="密码" name="password" v-model="password">
                 </div>
                 <div style="margin-top:20px">
                     <button type="button" class="redButton" @click="login">登录</button>
@@ -94,17 +94,44 @@ export default {
   methods: {
     login () {
       if (this.userName === '') {
-        alert('请输入账号')
+        this.$alert('请输入账号', '提示', {
+          confirmButtonText: '确认',
+          type: 'warning'
+        })
         return
       }
       if (this.password === '') {
-        alert('请输入密码')
+        this.$alert('请输入密码', '提示', {
+          confirmButtonText: '确认',
+          type: 'warning'
+        })
         return
       }
-      alert('登录成功')
-      this.$router.push('/home')
-      this.$store.state.isLogin = true
-      this.$store.state.userName = this.userName
+
+      const data = {
+        'username': this.userName,
+        'password': this.password
+      }
+      this.$axios.post('http://localhost:8080/login/loginVerify', data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$store.commit('login')
+          this.$message({
+            'type': 'success',
+            'message': '登录成功'
+          })
+          this.$router.push('/home')
+        } else {
+          this.$message({
+            'type': 'error',
+            'message': res.data.msg
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    //   this.$store.state.isLogin = true
+    //   this.$store.state.userName = this.userName
     }
   }
 }
