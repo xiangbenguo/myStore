@@ -120,6 +120,7 @@ export default {
             'type': 'success',
             'message': '登录成功'
           })
+          window.localStorage.setItem('status', 1)
           this.$router.push('/home')
         } else {
           this.$message({

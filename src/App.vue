@@ -15,6 +15,16 @@ export default {
   components: {
     'web-header': webHeader,
     'web-footer': webFooter
+  },
+  beforeCreate () {
+    if (window.localStorage.getItem('status') === '1') {
+      this.$store.commit('login')
+    }
+    var jsonData = window.localStorage.getItem('products')
+    var products = JSON.parse(jsonData)
+    if (products !== null) {
+      this.$store.state.productNum = products.productNum
+    }
   }
 }
 </script>

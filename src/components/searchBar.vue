@@ -20,20 +20,19 @@
 
 <script>
 export default {
-    name: 'search-bar',
-    data () {
-      return {
-        keyword: ''
-      }
-    },
-    methods: {
-      search () {
-        this.$router.push('/searchResults')
-      }
+  name: 'search-bar',
+  data () {
+    return {
+      keyword: ''
     }
+  },
+  methods: {
+    search () {
+      this.$router.push('/searchResults')
+    }
+  }
 }
 </script>
-
 
 <style scoped>
   .logo {

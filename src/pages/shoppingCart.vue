@@ -43,7 +43,7 @@
                                         <span class="cartProductItemPromotionPrice">￥{{item.productPrice}}</span>
                                     </td>
                                     <td>
-                                        <el-input-number v-model="item.productNum" size="mini" @change="handleChange" :min="1" :max="10"></el-input-number>                
+                                        <el-input-number v-model="item.productNum" size="mini" @change="handleChange" :min="1" :max="10"></el-input-number>
                                     </td>
                                     <td>
                                         <span class="cartProductItemSmallSumPrice">￥{{item.productNum*item.productPrice}}</span>
@@ -77,44 +77,31 @@ export default {
   data () {
     return {
       buyNumber: 1,
-      orderList: [
-        // {
-        //   pid: '12',
-        //   productImg: 'http://how2j.cn/tmall/img/productSingle_middle/3665.jpg',
-        //   productTitle: '美国iRobot扫地机器人吸尘器全自动家用智能扫地机650 天猫电器城',
-        //   productPrice: '5306.0',
-        //   productNum: 1
-        // }, {
-        //   pid: '13',
-        //   productImg: 'http://how2j.cn/tmall/img/productSingle_middle/8510.jpg',
-        //   productTitle: '阔腿裤三件套装女夏装2016新款大码雪纺时尚休闲气质棉麻九分裤潮',
-        //   productPrice: '152.75',
-        //   productNum: 1
-        // }
-      ]
+      orderList: []
     }
   },
   methods: {
-    handleChange() {
+    handleChange () {
 
     },
     buy () {
-      this.$router.push({path:'/confirm-order', query:{ pid:this.orderList[0].pid, productTitle:this.orderList[0].productTitle, num:this.orderList[0].productNum, price:this.orderList[0].productPrice}})
+      this.$router.push({path: '/confirm-order', query: {pid: this.orderList[0].pid, productTitle: this.orderList[0].productTitle, num: this.orderList[0].productNum, price: this.orderList[0].productPrice}})
     },
     removeProduct (index) {
-      this.orderList.splice(this.orderList[index],1)
+      this.orderList.splice(this.orderList[index], 1)
       console.log(this.orderList)
       console.log(index)
-      window.localStorage.clear()
+      window.localStorage.removeItem('products')
+      this.$store.state.productNum = 0
     }
   },
   computed: {
-    productSumPrice() {
+    productSumPrice () {
       var sum = 0
       console.log(this.orderList)
       if (this.orderList.length > 0) {
         for (var i = 0; i < this.orderList.length; i++) {
-          sum = sum + this.orderList[i].productNum*this.orderList[i].productPrice
+          sum = sum + this.orderList[i].productNum * this.orderList[i].productPrice
         }
       }
       return sum
@@ -137,6 +124,13 @@ export default {
     }
   },
   created () {
+    if (window.localStorage.getItem('status') !== '1') {
+      this.$router.push('login')
+      this.$message({
+        'type': 'error',
+        'message': '请登录'
+      })
+    }
     var jsonData = window.localStorage.getItem('products')
     var products = JSON.parse(jsonData)
     if (products !== null) {

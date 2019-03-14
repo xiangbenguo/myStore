@@ -6,26 +6,29 @@ axios.defaults.withCredentials = true
 Vue.use(Vuex)
 
 const state = {
-  userToken: null,
-  userName: '向本国',
   userInfo: {},
-  isLogin: false
+  isLogin: false,
+  productNum: ''
 }
 
 const mutations = {
   login (state) {
-    axios.get('http://localhost:8080/login/getUser', {
-      Headers: {
-        'Access-Control-Allow-Credentials': true
-      }
-    }).then((res) => {
+    axios.get('http://localhost:8080/login/getUser').then((res) => {
       console.log(res)
+      state.isLogin = true
+      state.userInfo = res.data.data
     }).catch((err) => {
       console.log(err)
     })
   },
   logout (state) {
-
+    axios.post('http://localhost:8080/login/logout').then((res) => {
+      console.log(res)
+      this.state.isLogin = false
+      window.localStorage.clear()
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 }
 export default new Vuex.Store({

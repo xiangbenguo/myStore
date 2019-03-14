@@ -3,51 +3,33 @@
         <div class="productDetailDiv" v-if="isVisible">
             <div class="titleBar">
                 <a class="selected" @click="changeDetail">商品详情</a>
-                <a class="productEvaluation" @click="changeEvaluation">累计评价 <span class="productEvaluationNumber">19</span> </a>
+                <a class="productEvaluation" @click="changeEvaluation">累计评价 <span class="productEvaluationNumber">{{evaluationNum}}</span> </a>
             </div>
             <div class="productParamterPart">
                 <div class="productParamter">产品参数：</div>
                 <div class="productParamterList">
-                        <span>材质成分:  聚酯纤维100% </span>
-                        <span>品牌:  Emyche/艾米秋 </span>
-                        <span>货号:  129668 </span>
-                        <span>尺码:  L M S XL X </span>
-                        <span>上市年份季节:  2016年夏季 </span>
-                        <span>颜色分类:  白色 黑色 浅蓝 </span>
-                        <span>适用年龄:  18-25周岁 </span>
+                        <span v-for="(item,index) in property.propertyName" :key="index">{{property.propertyName[index]}}:  {{property.propertyValue[index]}}</span>
                 </div>
             </div>
             <div class="productDetailImagesPart">
-                <img src="http://how2j.cn/tmall/img/productDetail/8626.jpg">
+                <img v-for="(item, index) in detailImgList" :key="index" :src="url(item)">
             </div>
         </div>
         <div class="productEvaluationDiv" v-else>
             <div class="titleBar">
                 <a class="productDetail" @click="changeDetail" >商品详情</a>
-                <a class="selected" @click="changeEvaluation">累计评价 <span class="productEvaluationNumber">19</span> </a>
+                <a class="selected" @click="changeEvaluation">累计评价 <span class="productEvaluationNumber">{{evaluationNum}}</span> </a>
             </div>
             <div class="productEvaluationContent">
-                <div class="productEvaluationItem">
+                <div class="productEvaluationItem" v-for="(item,index) in previewObj" :key="index">
                     <div class="evaluationAndDate">
                         <div class="evaluationContent">
-                            不错的购物，包装很精细，布料也不错舒服，因为之前一直购买品牌装，很好的一次网购，生完宝宝刚刚一个多月我一百五十斤穿2XL不错
+                            {{item.content}}
                         </div>
-                        <div class="evaluationDate">2016-08-10</div>
+                        <div class="evaluationDate">{{item.time}}</div>
                     </div>
                     <div class="evaluationUserInfo">
-                        哀****莉<span class="userInfoGrayPart">（匿名）</span>
-                    </div>
-                    <div style="clear:both"></div>
-                </div>
-                <div class="productEvaluationItem">
-                    <div class="evaluationAndDate">
-                        <div class="evaluationContent">
-                            面料很好，大小也刚刚好，本来买之前还担心，犹豫，等货到了，比我心中想象的好很多，大家放心购买，很满意的购物，以后还会来??
-                        </div>
-                        <div class="evaluationDate">2016-08-23</div>
-                    </div>
-                    <div class="evaluationUserInfo">
-                        贤*闲<span class="userInfoGrayPart">（匿名）</span>
+                        {{item.userName}}<span class="userInfoGrayPart"></span>
                     </div>
                     <div style="clear:both"></div>
                 </div>
@@ -60,7 +42,14 @@
 export default {
   data () {
     return {
-      isVisible: true
+      isVisible: true,
+      evaluationNum: '',
+      previewObj: [],
+      property: {
+        propertyName: [],
+        propertyValue: []
+      },
+      detailImgList: []
     }
   },
   methods: {
@@ -69,10 +58,83 @@ export default {
     },
     changeEvaluation () {
       this.isVisible = false
+    },
+    getProductInfo () {
+      this.$axios.get(`http://localhost:8080/product/get?id=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        if (res.data.data === 200) {
+          this.evaluationNum = res.data.data.evaluationNum === null ? 0 : res.data.data.evaluationNum
+        }
+        this.getProperty(res.data.data.cid)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getEvaluationInfo () {
+      this.$axios.get(`http://localhost:8080/evaluation/getPidList?pid=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            var obj = {
+              content: res.data.data[i].content,
+              userName: res.data.data[i].uid,
+              time: res.data.data[i].createtime.split('T')[0]
+            }
+            this.previewObj.push(obj)
+          }
+        }
+        console.log(this.previewObj)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProperty (cid) {
+      this.$axios.get(`http://localhost:8080/property/getCidList?cid=${cid}`).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            this.property.propertyName.push(res.data.data[i].name)
+          }
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getPropertyValue () {
+      this.$axios.get(`http://localhost:8080/propertyValue/getPidValueList?pid=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            this.property.propertyValue.push(res.data.data[i].value)
+          }
+        }
+        console.log(this.property)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProductImg () {
+      this.$axios.get(`http://localhost:8080/productImg/getPidList?pid=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        for (var i = 0; i < res.data.data.length; i++) {
+          if (res.data.data[i].type === 2) {
+            this.detailImgList.push(res.data.data[i].url)
+          }
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    url (src) {
+      return require(`E://upload/${src}`)
     }
   },
   created () {
     console.log(this.$route.query.pid)
+    this.getProductInfo()
+    this.getEvaluationInfo()
+    this.getPropertyValue()
+    this.getProductImg()
   }
 }
 
@@ -155,6 +217,10 @@ export default {
         margin: 20px 0;
         text-align: center
     }
+    .productDetailImagesPart img {
+        max-width: 760px;
+        margin: 10px 0
+    }
     .productDetail {
         padding: 0px 20px;
         border-right: 1px dotted #d2d2d2;
@@ -193,4 +259,3 @@ export default {
         color: #FF003E
     }
 </style>
-

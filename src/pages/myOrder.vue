@@ -29,24 +29,33 @@ import despatch from '../components/despatch'
 import theGoods from '../components/theGoods'
 import evaluation from '../components/evaluation'
 export default {
-    data() {
-      return {
-        activeName: 'first'
-      }
-    },
-    components: {
-      'search-bar': searchBar,
-      'all-order': allOrder,
-      'payment': payment,
-      'despatch': despatch,
-      'the-goods': theGoods,
-      'evaluation': evaluation
-    },
-    methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
-      }
+  data () {
+    return {
+      activeName: 'first'
     }
+  },
+  components: {
+    'search-bar': searchBar,
+    'all-order': allOrder,
+    'payment': payment,
+    'despatch': despatch,
+    'the-goods': theGoods,
+    'evaluation': evaluation
+  },
+  methods: {
+    handleClick (tab, event) {
+      console.log(tab, event)
+    }
+  },
+  created () {
+    if (window.localStorage.getItem('status') !== '1') {
+      this.$router.push('login')
+      this.$message({
+        'type': 'error',
+        'message': '请登录'
+      })
+    }
+  }
 }
 </script>
 

@@ -31,7 +31,7 @@
 
 <script>
 export default {
-    data () {
+  data () {
     return {
       categoryProduct: [{
         categoryTitle: '天猫超市  TMALL.MART',
@@ -171,12 +171,11 @@ export default {
             productPrice: '￥23'
           }
         ]
-      }],
+      }]
     }
   }
 }
 </script>
-
 
 <style scoped>
     .mainContainer {

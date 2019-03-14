@@ -8,7 +8,7 @@
                         <img class="bigImg" :src="bigImgSrc">
                     </div>
                     <div class="smallImgDiv">
-                        <img class="smallImg" v-for="(item, index) in smallImgList" :src="item" @mouseenter="changeBigImg($event)" :key="index">
+                        <img class="smallImg" v-for="(item, index) in smallImgList" :src="url(item)" @mouseenter="changeBigImg($event)" :key="index">
                     </div>
                 </div>
                 <div class="rightDiv">
@@ -54,7 +54,7 @@
                         <span style="color:#999999;display:inline-block;width:60px;font-size:12px">数量</span>
                         <el-input-number v-model="buyNumber" size="small" controls-position="right" @change="handleChange" :min="1" :max="10"></el-input-number>
                         <span style="color:#999999;font-size:12px;display:inline-block;width:40px">件</span>
-                        <span style="color:#999999;font-size:12px">库存200件</span>
+                        <span style="color:#999999;font-size:12px">库存{{stock}}件</span>
                     </div>
                     <div class="buyAndShoppingCart">
                         <button class="buyButton" @click="buy">立即购买</button>
@@ -76,23 +76,17 @@
 <script>
 import searchBar from '../components/searchBar'
 import detailAndEvaluation from '../components/detailAndEvaluation'
-import { patch } from 'semver';
 export default {
   data () {
     return {
-        bigImgSrc: 'http://how2j.cn/tmall/img/productSingle/8620.jpg',
-        buyNumber: 1,
-        smallImgList: [
-          'http://how2j.cn/tmall/img/productSingle/8620.jpg',
-          'http://how2j.cn/tmall/img/productSingle/8619.jpg',
-          'http://how2j.cn/tmall/img/productSingle/8618.jpg',
-          'http://how2j.cn/tmall/img/productSingle/8617.jpg',
-          'http://how2j.cn/tmall/img/productSingle/8616.jpg',
-        ],
-        productTitle: '阿迪达斯裤子男秋冬季休闲裤加绒卫裤长裤小脚男裤收口束脚运动裤',
-        productPrice: '1439.20',
-        monthSales: '371',
-        evaluationNum: '156'
+      bigImgSrc: '',
+      buyNumber: 1,
+      smallImgList: [],
+      productTitle: '',
+      productPrice: '',
+      stock: '',
+      monthSales: '',
+      evaluationNum: ''
     }
   },
   components: {
@@ -108,23 +102,58 @@ export default {
       console.log(value)
     },
     buy () {
-      this.$router.push({path:'/confirm-order', query:{ pid:this.$route.query.pid, productTitle:this.productTitle, num:this.buyNumber, price: this.productPrice}})
+      this.$router.push({path: '/confirm-order', query: {pid: this.$route.query.pid, productTitle: this.productTitle, num: this.buyNumber, price: this.productPrice}})
     },
     addCart () {
       var products = {
-        pid: '12',
+        pid: this.$route.query.pid,
         productImg: this.bigImgSrc,
         productTitle: this.productTitle,
         productPrice: this.productPrice,
         productNum: this.buyNumber
       }
       var data = JSON.stringify(products)
-      window.localStorage.setItem('products',data)
-      alert('成功加入购物车')
+      window.localStorage.setItem('products', data)
+      this.$message({
+        'type': 'success',
+        'message': '已成功加入购物车'
+      })
+      this.$store.state.productNum = products.productNum
+    },
+    url (src) {
+      return require(`E://upload/${src}`)
+    },
+    getProductInfo () {
+      this.$axios.get(`http://localhost:8080/product/get?id=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        this.productTitle = res.data.data.name
+        this.productPrice = res.data.data.price
+        this.stock = res.data.data.stock
+        this.monthSales = res.data.data.monthSales === null ? 0 : res.data.data.monthSales
+        this.evaluationNum = res.data.data.evaluationNum === null ? 0 : res.data.data.evaluationNum
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProductImg () {
+      this.$axios.get(`http://localhost:8080/productImg/getPidList?pid=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        for (var i = 0; i < res.data.data.length; i++) {
+          if (res.data.data[i].type === 1) {
+            this.smallImgList.push(res.data.data[i].url)
+          }
+        }
+        this.bigImgSrc = require(`E://upload/${this.smallImgList[0]}`)
+        console.log(this.smallImgList)
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   created () {
     console.log(this.$route.query.pid)
+    this.getProductInfo()
+    this.getProductImg()
   }
 }
 </script>

@@ -10,7 +10,7 @@
         <a style="cursor:pointer" v-else @click="logout">退出</a>
         <span class="right">
           <a style="cursor:pointer" @click="myOrder">我的订单</a>
-          <a style="cursor:pointer" @click="shoppingCart"><span class="glyphicon glyphicon-shopping-cart redColor"></span> 购物车<strong>{{number}}</strong>件</a>
+          <a style="cursor:pointer" @click="shoppingCart"><span class="glyphicon glyphicon-shopping-cart redColor"></span> 购物车<strong>{{shoopingNumber}}</strong>件</a>
         </span>
       </div>
     </div>
@@ -27,8 +27,7 @@ export default {
   name: 'web-header',
   data () {
     return {
-      number: 0,
-      userName: ''
+      number: 0
     }
   },
   components: {
@@ -37,39 +36,44 @@ export default {
   computed: {
     isLogin () {
       return !this.$store.state.isLogin
+    },
+    userName () {
+      return this.$store.state.userInfo.username || '未登录'
+    },
+    shoopingNumber () {
+      return this.$store.state.productNum || 0
     }
   },
   methods: {
-    myOrder() {
+    myOrder () {
       if (this.isLogin) {
         this.$router.push('/login')
+        this.$message({
+          'type': 'error',
+          'message': '请登录'
+        })
       } else {
         this.$router.push('/myOrder')
       }
     },
-    logout() {
-      this.$store.state.isLogin = false
+    logout () {
+      this.$store.commit('logout')
       this.$router.push('/home')
-      console.log(this.$store.state.isLogin)
     },
     shoppingCart () {
       if (this.isLogin) {
         this.$router.push('/login')
+        this.$message({
+          'type': 'error',
+          'message': '请登录'
+        })
       } else {
         this.$router.push('/shoppingCart')
       }
     }
   },
   created () {
-    if (this.$store.state.isLogin) {
-      this.userName = this.$store.state.userName
-    }
 
-    var jsonData = window.localStorage.getItem('products')
-    var products = JSON.parse(jsonData)
-    if (products !== null) {
-      this.number = products.productNum
-    }
   }
 }
 </script>
