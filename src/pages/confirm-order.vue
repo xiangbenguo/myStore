@@ -55,7 +55,7 @@
                     </thead>
                     <tbody class="productListTableTbody">
                             <tr class="orderItemTR">
-                                <td class="orderItemFirstTD"><img width="20px"  src="http://how2j.cn/tmall/img/productSingle_middle/4206.jpg" class="orderItemImg"></td>
+                                <td class="orderItemFirstTD"><img width="20px" :src="imgUrl()" class="orderItemImg"></td>
                                 <td class="orderItemProductInfo">
                                     <a class="orderItemProductLink" href="#nowhere">
                                         {{productTitle}}
@@ -105,6 +105,7 @@ export default {
     return {
       productTitle: '',
       productPrice: '',
+      url: '',
       productNumber: '',
       address: '',
       post: '',
@@ -114,7 +115,71 @@ export default {
   },
   methods: {
     submitOrder () {
-      this.$router.push({path: '/pay', query: {oid: '123', sumPirce: this.priceSum}})
+      if (this.address === '') {
+        this.$message({
+          'type': 'error',
+          'message': '请输入收货地址'
+        })
+        return
+      }
+      if (this.receiver === '') {
+        this.$message({
+          'type': 'error',
+          'message': '请输入收货人姓名'
+        })
+        return
+      }
+      if (this.phoneNumber === '') {
+        this.$message({
+          'type': 'error',
+          'message': '请输入手机号码'
+        })
+        return
+      }
+      if (!(/^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/.test(this.phoneNumber))) {
+        this.$message({
+          'type': 'error',
+          'message': '手机号格式错误'
+        })
+        return
+      }
+      const data = {
+        'receiver': this.receiver,
+        'address': this.address,
+        'post': this.post,
+        'phoneNumber': this.phoneNumber,
+        'status': 1,
+        'pid': this.$route.query.pid,
+        'amount': this.$route.query.num,
+        'uid': this.$store.state.userInfo.id
+      }
+      console.log(data)
+      this.$axios.post(`${this.restUrl}/order/add`, data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$router.push({path: '/pay', query: {oid: res.data.data.id, sumPirce: this.priceSum}})
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProductImg () {
+      this.$axios.get(`${this.restUrl}/productImg/getPidList?pid=${this.$route.query.pid}`).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            if (res.data.data[i].type === 1) {
+              this.url = res.data.data[i].url
+              break
+            }
+          }
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    imgUrl () {
+      return require(`E://upload/${this.url}`)
     }
   },
   computed: {
@@ -127,6 +192,7 @@ export default {
     this.productTitle = this.$route.query.productTitle
     this.productPrice = this.$route.query.price
     this.productNumber = this.$route.query.num
+    this.getProductImg()
   }
 }
 </script>

@@ -6,27 +6,47 @@
     </div>
     <div class="payedDiv">
         <div class="payedTextDiv">
-            <img src="http://how2j.cn/tmall/img/site/paySuccess.png">
+            <img src="@/assets/img/buy/paySuccess.png">
             <span>您已成功付款</span>
         </div>
         <div class="payedAddressInfo">
             <ul>
-                <li>收货地址： 北京市 朝阳区 天安门 3栋 2单元 402室 </li>
+                <li>收货地址： {{this.address}}</li>
                 <li>实付款：<span class="payedInfoPrice">
-                ￥2,124.15
+                ￥{{this.$route.query.sumPrice}}
                 </span></li>
-                <li>预计3天内送达    </li>
+                <li>预计3天内送达</li>
             </ul>
         </div>
         <div class="payedSeperateLine">
         </div>
         <div class="warningDiv">
-            <img src="http://how2j.cn/tmall/img/site/warning.png">
+            <img src="@/assets/img/buy/warning.png">
             <b>安全提醒：</b>下单后，<span class="redColor boldWord">用QQ给您发送链接办理退款的都是骗子！</span>天猫不存在系统升级，订单异常等问题，谨防假冒客服电话诈骗！
         </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      address: ''
+    }
+  },
+  created () {
+    this.$axios.get(`${this.restUrl}/order/get?id=${this.$route.query.oid}`).then((res) => {
+      console.log(res)
+      if (res.data.code === 200) {
+        this.address = res.data.data.address
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+}
+</script>
 
 <style scoped>
 div.paySuccess {
@@ -55,7 +75,7 @@ div.payedAddressInfo{
     padding: 26px 35px;
 }
 div.payedAddressInfo li{
-    background-image:url(http://how2j.cn/tmall/img/site/li_dot.png);
+    background-image:url('../assets/img/buy/li_dot.png');
     background-repeat: no-repeat;
     background-color: transparent;
     background-attachment: scroll;

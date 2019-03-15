@@ -38,7 +38,7 @@ export default {
       return !this.$store.state.isLogin
     },
     userName () {
-      return this.$store.state.userInfo.username || '未登录'
+      return this.$store.state.userInfo === {} ? '未登录' : this.$store.state.userInfo.username
     },
     shoopingNumber () {
       return this.$store.state.productNum || 0

@@ -45,7 +45,7 @@
                                         <div class="orderListItemProductLinkInnerDiv">
                                                     <img title="支持信用卡支付" src="http://how2j.cn/tmall/img/site/creditcard.png">
                                                     <img title="消费者保障服务,承诺7天退货" src="http://how2j.cn/tmall/img/site/7day.png">
-                                                    <img title="消费者保障服务,承诺如实描述" src="http://how2j.cn/tmall/img/site/promise.png">                    
+                                                    <img title="消费者保障服务,承诺如实描述" src="http://how2j.cn/tmall/img/site/promise.png">
                                         </div>
                                     </div>
                                 </td>
@@ -73,7 +73,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       orderList: [
         {
@@ -128,47 +128,47 @@ export default {
   methods: {
     operation (value) {
       if (value.operation === '付款') {
-          console.log('传入oid，跳转到付款页面')
-          this.$router.push({path:'/pay',query:{oid:'123', sumPirce: value.productSumPrice}})
+        console.log('传入oid，跳转到付款页面')
+        this.$router.push({path: '/pay', query: {oid: '123', sumPirce: value.productSumPrice}})
       } else if (value.operation === '催卖家发货') {
-          this.$alert('已提醒卖家发货', '提示', {
-            confirmButtonText: '确定'
-          })
+        this.$alert('已提醒卖家发货', '提示', {
+          confirmButtonText: '确定'
+        })
       } else if (value.operation === '确认收货') {
-          this.$confirm('请收到货后，再确认收货！否则您可能钱货两空！', '提示', {
-              confirmButtonText: '确认收货',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              console.log('传入oid修改订单状态')
-              this.$message({
-                type: 'success',
-                message: '收货成功!'
-              });
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消收货'
-              })
-            })
-      } else {
-          this.$prompt('请输入评价内容', '评价', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputPattern:  /\S/,
-            inputErrorMessage: '评价内容不能为空'
-          }).then(({ value }) => {
-            console.log('传入oid和评价内容：' + value)
-            this.$message({
-              type: 'success',
-              message: '评价成功' 
-            });
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消评价'
-            })
+        this.$confirm('请收到货后，再确认收货！否则您可能钱货两空！', '提示', {
+          confirmButtonText: '确认收货',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log('传入oid修改订单状态')
+          this.$message({
+            type: 'success',
+            message: '收货成功!'
           })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消收货'
+          })
+        })
+      } else {
+        this.$prompt('请输入评价内容', '评价', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /\S/,
+          inputErrorMessage: '评价内容不能为空'
+        }).then(({ value }) => {
+          console.log('传入oid和评价内容：' + value)
+          this.$message({
+            type: 'success',
+            message: '评价成功'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消评价'
+          })
+        })
       }
     }
   }
