@@ -15,7 +15,7 @@
                 <div class="product-iWrap">
                     <div class="productImg">
                         <router-link :to="{path:'/productInfo',query:{pid:item.pid}}">
-                            <img :src="item.productImg" alt="" width="205px" height="210px">
+                            <img :src="url(item.productImg)" alt="" width="205px" height="210px">
                         </router-link>
                     </div>
                     <p class="productPrice">
@@ -47,78 +47,46 @@ export default {
   data () {
     return {
       hasResults: false,
-      searchResultsInfo: [{
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 51
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }, {
-        pid: 10,
-        productImg: require('../assets/img/product/product01.jpg'),
-        productPrice: 20,
-        productTitle: '电视机罩防尘罩壁挂式液晶32 55英寸50曲面65欧式盖布艺电脑套',
-        monthSales: '201',
-        evaluationNum: 5
-      }]
+      searchResultsInfo: []
     }
+  },
+  methods: {
+      url (value) {
+          console.log(`E://upload/${value}`)
+          return require(`E://upload/${value}`)
+      }
+  },
+  created () {
+       this.$axios.get(`${this.restUrl}/product/list?keyword=${this.$route.query.keyword}`).then((res) => {
+        console.log(res)
+        this.hasResults = []
+        if (res.data.data.length === 0) {
+            this.hasResults = true
+        } else {
+            this.hasResults = false
+            for (var i = 0; i < res.data.data.length; i++) {
+                var obj = {
+                    pid: res.data.data[i].id,
+                    // productImg: require('../assets/img/product/product01.jpg'),
+                    productPrice: res.data.data[i].price,
+                    productTitle: res.data.data[i].name,
+                    monthSales: res.data.data[i].monthSales === null ? 0 : res.data.data[i].monthSales,
+                    evaluationNum: res.data.data[i].evaluationNum === null ? 0 : res.data.data[i].evaluationNum
+                }
+                this.searchResultsInfo.push(obj)
+                for (var j = 0; j < res.data.data[i].imgs.length; j++) {
+                    if (res.data.data[i].imgs[j].type = 1) {
+                        this.searchResultsInfo[i].productImg = res.data.data[i].imgs[j].url
+                        break
+                    }
+                }
+            }
+            console.log(this.searchResultsInfo)
+        }
+
+      }).catch((err) => {
+        console.log(err)
+      })
   }
 }
 </script>

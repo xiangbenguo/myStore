@@ -28,7 +28,15 @@ export default {
   },
   methods: {
     search () {
-      this.$router.push('/searchResults')
+      var path = window.location.hash.split('#')[1].split('?')[0]
+      if (path === '/searchResults') {
+        this.$router.push({
+          path: '/redirectPage',
+          query: {keyword: this.keyword}
+        })
+      } else {
+        this.$router.push({path:'/searchResults', query: {keyword: this.keyword}})
+      }
     }
   }
 }
@@ -43,14 +51,14 @@ export default {
     z-index: -1;
   }
   .searchDiv {
-    width: 630px;
+    width: 580px;
     background-color: #FF003E;
     margin: 50px auto;
     padding: 1px;
     height: 40px
   }
   .searchDiv input {
-    width: 490px;
+    width: 440px;
     border: 1px solid transparent;/*将边框设置成透明的*/
     height: 36px;
     margin: 1px;

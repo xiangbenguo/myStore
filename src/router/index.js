@@ -11,6 +11,7 @@ import Pay from '@/pages/pay'
 import PaySuccess from '@/pages/paySuccess'
 import ShoppingCart from '@/pages/shoppingCart'
 import MyOrder from '@/pages/myOrder'
+import RedirectPage from '@/pages/redirectPage'
 
 Vue.use(Router)
 
@@ -62,6 +63,10 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register
+    }, {
+      path: '/redirectPage',
+      name: 'redirectPage',
+      component: RedirectPage
     }
   ]
 })

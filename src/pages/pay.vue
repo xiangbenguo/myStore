@@ -30,7 +30,7 @@ export default {
         'id': this.$route.query.oid,
         'status': 2
       }
-      this.$axios.post(`${this.restUrl}/order/update`, data).then((res) => {
+      this.$axios.post(`${this.restUrl}/order/pay`, data).then((res) => {
         console.log(res)
         if (res.data.code === 200) {
           this.$router.push({path: '/paySuccess', query: {oid: this.$route.query.oid, sumPrice: this.sumPirce}})

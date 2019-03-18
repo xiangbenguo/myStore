@@ -76,43 +76,43 @@ export default {
   data () {
     return {
       orderList: [
-        {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/3796.jpg',
-          productTitle: '公众智能扫地机器人家用全自动电动清洁地毯擦拖地一体机吸尘器',
-          productPrice: '2,124.15',
-          productNum: 1,
-          productSumPrice: '2,124.15',
-          operation: '评价'
-        }, {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
-          productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
-          productPrice: '1,128.60',
-          productNum: 1,
-          productSumPrice: '1,128.60',
-          operation: '确认收货'
-        }, {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
-          productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
-          productPrice: '1,128.60',
-          productNum: 1,
-          productSumPrice: '1,128.60',
-          operation: '付款'
-        }, {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
-          productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
-          productPrice: '1,128.60',
-          productNum: 1,
-          productSumPrice: '1,128.60',
-          operation: '催卖家发货'
-        }
+    //     {
+    //       time: '2016-09-12 17:00:41',
+    //       orderNumber: '20160912170041674794',
+    //       productImg: 'http://how2j.cn/tmall/img/productSingle_middle/3796.jpg',
+    //       productTitle: '公众智能扫地机器人家用全自动电动清洁地毯擦拖地一体机吸尘器',
+    //       productPrice: '2,124.15',
+    //       productNum: 1,
+    //       productSumPrice: '2,124.15',
+    //       operation: '评价'
+    //     }, {
+    //       time: '2016-09-12 17:00:41',
+    //       orderNumber: '20160912170041674794',
+    //       productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
+    //       productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
+    //       productPrice: '1,128.60',
+    //       productNum: 1,
+    //       productSumPrice: '1,128.60',
+    //       operation: '确认收货'
+    //     }, {
+    //       time: '2016-09-12 17:00:41',
+    //       orderNumber: '20160912170041674794',
+    //       productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
+    //       productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
+    //       productPrice: '1,128.60',
+    //       productNum: 1,
+    //       productSumPrice: '1,128.60',
+    //       operation: '付款'
+    //     }, {
+    //       time: '2016-09-12 17:00:41',
+    //       orderNumber: '20160912170041674794',
+    //       productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
+    //       productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
+    //       productPrice: '1,128.60',
+    //       productNum: 1,
+    //       productSumPrice: '1,128.60',
+    //       operation: '催卖家发货'
+    //     }
       ]
     }
   },
@@ -171,6 +171,23 @@ export default {
         })
       }
     }
+  },
+  created () {
+      this.$axios.get(`${this.restUrl}/order/getUserOrder`).then((res) => {
+          console.log(res)
+          this.orderList = []
+          for (var i = 0; i < res.data.data.length; i++) {
+              var obj = {
+                time: res.data.data[i].createtime.replace('.000+0000',''),
+                orderNumber: '20160912170041674794',
+                productNum: res.data.data[i].amount,
+                operation: res.data.data[i].status
+              }
+              this.orderList.push(obj)
+          }
+      }).catch((err) => {
+          console.log(err)
+      })
   }
 }
 </script>
