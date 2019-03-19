@@ -24,7 +24,7 @@
                                     <span>{{item.orderNumber}}</span>
                                 </td>
                                 <td colspan="2">
-                                    <img width="13px" src="http://how2j.cn/tmall/img/site/orderItemTmall.png">天猫商场
+                                    <img width="13px" src="../assets/img/buy/tmallbuy.png">天猫商场
                                 </td>
                                 <td colspan="1">
                                     <a href="#nowhere" class="wangwanglink">
@@ -38,14 +38,14 @@
                                 </td>
                             </tr>
                             <tr class="orderItemProductInfoPartTR">
-                                <td class="orderItemProductInfoPartTD"><img width="80" height="80" :src="item.productImg"></td>
+                                <td class="orderItemProductInfoPartTD"><img width="80" height="80" :src="url(item.productImgSrc)"></td>
                                 <td class="orderItemProductInfoPartTD">
                                     <div class="orderListItemProductLinkOutDiv">
                                         <a href="#nowhere">{{item.productTitle}}</a>
                                         <div class="orderListItemProductLinkInnerDiv">
-                                                    <img title="支持信用卡支付" src="http://how2j.cn/tmall/img/site/creditcard.png">
-                                                    <img title="消费者保障服务,承诺7天退货" src="http://how2j.cn/tmall/img/site/7day.png">
-                                                    <img title="消费者保障服务,承诺如实描述" src="http://how2j.cn/tmall/img/site/promise.png">                    
+                                                    <img title="支持信用卡支付" src="../assets/img/buy/creditcard.png">
+                                                    <img title="消费者保障服务,承诺7天退货" src="../assets/img/buy/7day.png">
+                                                    <img title="消费者保障服务,承诺如实描述" src="../assets/img/buy/promise.png">
                                         </div>
                                     </div>
                                 </td>
@@ -74,29 +74,9 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      orderList: [
-        {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/3796.jpg',
-          productTitle: '公众智能扫地机器人家用全自动电动清洁地毯擦拖地一体机吸尘器',
-          productPrice: '2,124.15',
-          productNum: 1,
-          productSumPrice: '2,124.15',
-          operation: '评价'
-        }, {
-          time: '2016-09-12 17:00:41',
-          orderNumber: '20160912170041674794',
-          productImg: 'http://how2j.cn/tmall/img/productSingle_middle/6651.jpg',
-          productTitle: 'ULIFE原创信封包男个性真皮手包男士手拿包休闲男包手抓包拉链潮',
-          productPrice: '1,128.60',
-          productNum: 1,
-          productSumPrice: '1,128.60',
-          operation: '评价'
-        }
-      ]
+      orderList: []
     }
   },
   computed: {
@@ -109,25 +89,112 @@ export default {
     }
   },
   methods: {
-    operation () {
+    operation (status) {
+      console.log(status)
       this.$prompt('请输入评价内容', '评价', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        inputPattern:  /\S/,
+        inputPattern: /\S/,
         inputErrorMessage: '评价内容不能为空'
       }).then(({ value }) => {
         console.log('传入oid和评价内容：' + value)
-        this.$message({
-          type: 'success',
-          message: '评价成功' 
-        });
+        this.evaluation(status.pid, value)
+        this.complete(status.oid)
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '取消评价'
-        })   
+        })
+      })
+    },
+    evaluation (pid, value) {
+      var data = {
+        'uid': this.$store.state.userInfo.id,
+        'pid': pid,
+        'content': value
+      }
+      this.$axios.post(`${this.restUrl}/evaluation/add`, data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '评价成功'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    complete (oid) {
+      var data = {
+        'id': oid,
+        'status': 5
+      }
+      this.$axios.post(`${this.restUrl}/order/complete`, data).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.getOrderList()
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProductInfo (pid, index) {
+      this.$axios.get(`${this.restUrl}/product/get?id=${pid}`).then((res) => {
+        console.log(res)
+        if (res.data.code === 200) {
+          this.orderList[index].productTitle = res.data.data.name
+          this.orderList[index].productPrice = res.data.data.price
+        }
+        console.log(this.orderList[index])
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getProductImg (pid, index) {
+      this.$axios.get(`${this.restUrl}/productImg/getPidList?pid=${pid}`).then((res) => {
+        console.log(res)
+        for (var i = 0; i < res.data.data.length; i++) {
+          if (res.data.data[i].type === 1) {
+            this.orderList[index].productImgSrc = res.data.data[i].url
+            break
+          }
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    url (src) {
+      return require(`E://upload/${src}`)
+    },
+    getOrderList () {
+      this.$axios.get(`${this.restUrl}/order/userOrderStatus?status=4`).then((res) => {
+        console.log(res)
+        this.orderList = []
+        for (var i = 0; i < res.data.data.length; i++) {
+          var obj = {
+            pid: res.data.data[i].pid,
+            oid: res.data.data[i].id,
+            time: res.data.data[i].createtime.replace('.000+0000', ''),
+            productImgSrc: '',
+            productTitle: '',
+            productPrice: '',
+            orderNumber: '20160912170041674794',
+            productNum: res.data.data[i].amount,
+            operation: '评价'
+          }
+          this.orderList.push(obj)
+          this.getProductInfo(res.data.data[i].pid, i)
+          this.getProductImg(res.data.data[i].pid, i)
+        }
+        console.log(this.orderList)
+      }).catch((err) => {
+        console.log(err)
       })
     }
+  },
+  created () {
+    this.getOrderList()
   }
 }
 </script>

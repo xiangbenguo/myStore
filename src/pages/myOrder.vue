@@ -48,7 +48,7 @@ export default {
     }
   },
   created () {
-    if (window.localStorage.getItem('status') !== '1') {
+    if (!this.$store.state.isLogin) {
       this.$router.push('login')
       this.$message({
         'type': 'error',

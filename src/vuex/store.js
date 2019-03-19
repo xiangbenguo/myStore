@@ -15,8 +15,16 @@ const mutations = {
   login (state) {
     axios.get('http://localhost:8080/login/getUser').then((res) => {
       console.log(res)
-      state.isLogin = true
-      state.userInfo = res.data.data
+      if (res.data.code === 200) {
+        state.isLogin = true
+        state.userInfo = res.data.data
+      } else if (res.data.code === 3) {
+        this.$router.push('/login')
+        this.$message({
+          'type': 'error',
+          'message': '请登录'
+        })
+      }
     }).catch((err) => {
       console.log(err)
     })

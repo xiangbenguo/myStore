@@ -35,7 +35,7 @@ export default {
           query: {keyword: this.keyword}
         })
       } else {
-        this.$router.push({path:'/searchResults', query: {keyword: this.keyword}})
+        this.$router.push({path: '/searchResults', query: {keyword: this.keyword}})
       }
     }
   }

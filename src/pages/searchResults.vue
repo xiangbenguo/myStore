@@ -51,42 +51,41 @@ export default {
     }
   },
   methods: {
-      url (value) {
-          console.log(`E://upload/${value}`)
-          return require(`E://upload/${value}`)
-      }
+    url (value) {
+      console.log(`E://upload/${value}`)
+      return require(`E://upload/${value}`)
+    }
   },
   created () {
-       this.$axios.get(`${this.restUrl}/product/list?keyword=${this.$route.query.keyword}`).then((res) => {
-        console.log(res)
-        this.hasResults = []
-        if (res.data.data.length === 0) {
-            this.hasResults = true
-        } else {
-            this.hasResults = false
-            for (var i = 0; i < res.data.data.length; i++) {
-                var obj = {
-                    pid: res.data.data[i].id,
-                    // productImg: require('../assets/img/product/product01.jpg'),
-                    productPrice: res.data.data[i].price,
-                    productTitle: res.data.data[i].name,
-                    monthSales: res.data.data[i].monthSales === null ? 0 : res.data.data[i].monthSales,
-                    evaluationNum: res.data.data[i].evaluationNum === null ? 0 : res.data.data[i].evaluationNum
-                }
-                this.searchResultsInfo.push(obj)
-                for (var j = 0; j < res.data.data[i].imgs.length; j++) {
-                    if (res.data.data[i].imgs[j].type = 1) {
-                        this.searchResultsInfo[i].productImg = res.data.data[i].imgs[j].url
-                        break
-                    }
-                }
+    this.$axios.get(`${this.restUrl}/product/list?keyword=${this.$route.query.keyword}`).then((res) => {
+      console.log(res)
+      this.hasResults = []
+      if (res.data.data.length === 0) {
+        this.hasResults = true
+      } else {
+        this.hasResults = false
+        for (var i = 0; i < res.data.data.length; i++) {
+          var obj = {
+            pid: res.data.data[i].id,
+            // productImg: require('../assets/img/product/product01.jpg'),
+            productPrice: res.data.data[i].price,
+            productTitle: res.data.data[i].name,
+            monthSales: res.data.data[i].monthSales === null ? 0 : res.data.data[i].monthSales,
+            evaluationNum: res.data.data[i].evaluationNum === null ? 0 : res.data.data[i].evaluationNum
+          }
+          this.searchResultsInfo.push(obj)
+          for (var j = 0; j < res.data.data[i].imgs.length; j++) {
+            if (res.data.data[i].imgs[j].type === 1) {
+              this.searchResultsInfo[i].productImg = res.data.data[i].imgs[j].url
+              break
             }
-            console.log(this.searchResultsInfo)
+          }
         }
-
-      }).catch((err) => {
-        console.log(err)
-      })
+        console.log(this.searchResultsInfo)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 }
 </script>
