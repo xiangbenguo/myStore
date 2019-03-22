@@ -10,7 +10,7 @@
           </el-carousel>
         </div>
         <div class="categoryMenu">
-            <div class="eachCategory" v-for="(item, index) in categoryList" :key="index" :cid="item.cid" @mouseenter="showProductBar(item.cid)" @mouseleave="hideProductBar(item.cid)">
+            <div class="eachCategory" ref="dom" v-for="(item, index) in categoryList" :key="index" :cid="item.cid" @mouseenter="showProductBar(item.cid)" @mouseleave="hideProductBar(item.cid)">
                 <span class="glyphicon glyphicon-link"></span>
                 <a href="#nowhere">
                     {{item.name}}
