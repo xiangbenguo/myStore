@@ -55,7 +55,7 @@
                     </thead>
                     <tbody class="productListTableTbody">
                             <tr class="orderItemTR">
-                                <td class="orderItemFirstTD"><img width="20px" :src="imgUrl()" class="orderItemImg"></td>
+                                <td class="orderItemFirstTD"><img width="20px" :src="require(`E://upload/${this.url}`)" class="orderItemImg"></td>
                                 <td class="orderItemProductInfo">
                                     <a class="orderItemProductLink" href="#nowhere">
                                         {{productTitle}}
@@ -177,9 +177,6 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
-    },
-    imgUrl () {
-      return require(`E://upload/${this.url}`)
     }
   },
   computed: {

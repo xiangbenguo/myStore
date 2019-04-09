@@ -8,7 +8,7 @@
                         <img class="bigImg" :src="bigImgSrc">
                     </div>
                     <div class="smallImgDiv">
-                        <img class="smallImg" v-for="(item, index) in smallImgList" :src="url(item)" @mouseenter="changeBigImg($event)" :key="index">
+                        <img class="smallImg" v-for="(item, index) in smallImgList" :src="require(`E://upload/${item}`)" @mouseenter="changeBigImg($event)" :key="index">
                     </div>
                 </div>
                 <div class="rightDiv">
@@ -102,6 +102,14 @@ export default {
       console.log(value)
     },
     buy () {
+      if (!this.$store.state.isLogin) {
+        this.$router.push('/login')
+        this.$message({
+          'type': 'error',
+          'message': '请登录'
+        })
+        return
+      }
       this.$router.push({path: '/confirm-order', query: {pid: this.$route.query.pid, productTitle: this.productTitle, num: this.buyNumber, price: this.productPrice}})
     },
     addCart () {
@@ -119,9 +127,6 @@ export default {
         'message': '已成功加入购物车'
       })
       this.$store.state.productNum = products.productNum
-    },
-    url (src) {
-      return require(`E://upload/${src}`)
     },
     getProductInfo () {
       this.$axios.get(`http://localhost:8080/product/get?id=${this.$route.query.pid}`).then((res) => {

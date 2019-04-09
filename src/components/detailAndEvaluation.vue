@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="productDetailImagesPart">
-                <img v-for="(item, index) in detailImgList" :key="index" :src="url(item)">
+                <img v-for="(item, index) in detailImgList" :key="index" :src="require(`E://upload/${item}`)">
             </div>
         </div>
         <div class="productEvaluationDiv" v-else>
@@ -124,9 +124,6 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
-    },
-    url (src) {
-      return require(`E://upload/${src}`)
     }
   },
   created () {

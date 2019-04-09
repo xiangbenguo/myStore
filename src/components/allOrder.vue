@@ -38,7 +38,7 @@
                                 </td>
                             </tr>
                             <tr class="orderItemProductInfoPartTR">
-                                <td class="orderItemProductInfoPartTD"><img :src="url(item.productImgSrc)" width="80" height="80"></td>
+                                <td class="orderItemProductInfoPartTD"><img :src="`http://localhost:8080/upload/${item.productImgSrc}`" width="80" height="80"></td>
                                 <td class="orderItemProductInfoPartTD">
                                     <div class="orderListItemProductLinkOutDiv">
                                         <a href="#nowhere">{{item.productTitle}}</a>
@@ -232,9 +232,6 @@ export default {
         console.log(err)
       })
     },
-    url (value) {
-      return require(`E://upload/${value}`)
-    },
     getOrderList () {
       this.$axios.get(`${this.restUrl}/order/getUserOrder`).then((res) => {
         console.log(res)
@@ -327,6 +324,7 @@ export default {
     div.orderListItemProductLinkOutDiv{
         position: relative;
         height: 80px;
+        width: 470px
     }
     div.orderListItemProductLinkInnerDiv{
         position: absolute;
