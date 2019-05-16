@@ -29,7 +29,7 @@
                         <div class="evaluationDate">{{item.time}}</div>
                     </div>
                     <div class="evaluationUserInfo">
-                        {{item.userName}}<span class="userInfoGrayPart"></span>
+                        用户ID{{item.userName}}<span class="userInfoGrayPart"></span>
                     </div>
                     <div style="clear:both"></div>
                 </div>

@@ -10,14 +10,14 @@
           </el-carousel>
         </div>
         <div class="categoryMenu">
-            <div class="eachCategory" ref="dom" v-for="(item, index) in categoryList" :key="index" :cid="item.cid" @mouseenter="showProductBar(item.cid)" @mouseleave="hideProductBar(item.cid)">
+            <div class="eachCategory" v-for="(item, index) in categoryList" :key="index" :ref="item.cid" @mouseenter="showProductBar(index)" @mouseleave="hideProductBar(index)">
                 <span class="glyphicon glyphicon-link"></span>
                 <a href="#nowhere">
                     {{item.name}}
                 </a>
             </div>
         </div>
-        <div class="productsAsideCategorys" v-for="(item, index) in categoryList" :key="index" :cid="item.cid" style="display: none;" @mouseenter="showProductBar(item.cid)" @mouseleave="hideProductBar(item.cid)">
+        <div class="productsAsideCategorys" v-for="(item, index) in categoryList" :key="index" :ref="item.cid" style="display: none;" @mouseenter="showProductBar(index)" @mouseleave="hideProductBar(index)">
             <div class="row " v-for="(item, index) in item.product" :key="index">
                 <a  v-for="(item, index) in item.productRow" :key="index" @click="handleClick(item.pid)" style="cursor:pointer">{{item.productName}}</a>
                 <div class="seperator"></div>
@@ -41,15 +41,17 @@ export default {
     }
   },
   methods: {
-    showProductBar (cid) {
-      $('div.eachCategory[cid=' + cid + ']').css('background-color', 'white')
-      $('div.eachCategory[cid=' + cid + '] a').css('color', '#ff003e')
-      $('div.productsAsideCategorys[cid=' + cid + ']').show()
+    showProductBar (index) {
+      this.$refs[index + 1][0].style.background = 'white'
+      this.$refs[index + 1][0].childNodes[2].style.color = '#ff003e'
+      this.$refs[index + 1][0].style.color = '#ff003e'
+      this.$refs[index + 1][1].style.display = 'block'
     },
-    hideProductBar (cid) {
-      $('div.eachCategory[cid=' + cid + ']').css('background-color', 'rgba(0, 0, 0, 0.55)')
-      $('div.eachCategory[cid=' + cid + '] a').css('color', 'white')
-      $('div.productsAsideCategorys[cid=' + cid + ']').hide()
+    hideProductBar (index) {
+      this.$refs[index + 1][0].style.background = 'rgba(0, 0, 0, 0.55)'
+      this.$refs[index + 1][0].childNodes[2].style.color = 'white'
+      this.$refs[index + 1][0].style.color = 'rgba(0, 0, 0, 0.55)'
+      this.$refs[index + 1][1].style.display = 'none'
     },
     handleClick (pid) {
       console.log(pid)
